@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 350px;
+            height: 500vh; 
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        hr {
+            border: none;
+            height: 2px;
+            background-color: #ccc;
+            width: 100%;
+            margin: 20px 0; /* Spacing around dividers */
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #34495e;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: left;
+            padding-left: 15px;
+        }
+        .sidebar ul li:hover {
+            background: #1abc9c;
+        }
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .content section {
+            display: none;
+        }
+        .content section.active {
+            display: block;
+        }
+        .content ul {
+            list-style: none;
+            padding: 0;
+        }
+        .content ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f4f4f4;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: left;
+            padding-left: 15px;
+            font-weight: bold; /* Make clickable headers bold */
+        }
+        .content ul li:hover {
+            background: #ddd;
+        }
+        .button-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-container button:hover {
+            background: #1abc9c;
+        }
+        .subsection {
+            margin-left: 20px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9e9e9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+        }
+        .subsection.active {
+            display: block;
+        }
+        .step {
+            display: none; /* Ensure all sub-nodes are collapsed by default */
+            margin-left: 20px;
+            padding: 10px;
+            background: #e9e9e9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .toggle {
+            cursor: pointer;
+            color: #1abc9c;
+            text-decoration: underline;
+        }
+        .toggle:hover {
+            color: #16a085;
+        }
+        .highlight {
+            font-weight: bold;
+        }
+        .highlight:hover {
+            color: #16a085;
+        }
+        
+    </style>
+    <script>
+        function showContent(sectionId) {
+            document.querySelectorAll('.content section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function toggleSubsection(event) {
+            const subsection = event.target.nextElementSibling;
+            if (subsection) {
+                subsection.classList.toggle('active');
+            }
+        }
+        function toggleDisplay(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section.style.display === "none") {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+        }
+        
+        // Expand or collapse all sections
+        function toggleAll(action) {
+            const steps = document.querySelectorAll(".step");
+            steps.forEach(step => {
+                step.style.display = action === "expand" ? "block" : "none";
+            });
+        }
+    </script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class ="navbar-1">
+            <h2>Dashboard</h2>
+        <ul>
+            <li onclick="showContent('website-addition')">Website addition</li>
+            <li onclick="showContent('paypal-integration-1')">Paypal Integration failure</li>
+            <li onclick="showContent('paypal-integration-2')">Paypal Access Issue</li>
+            <li onclick="showContent('account-not-activated')">Account Activation Delay</li>
+            <li onclick="showContent('email/contact-update')">Email/Contact Update</li>
+            <li onclick="showContent('email/contact-exist')">Email/Phone number already exist</li>
+            <li onclick="showContent('submit-button-greyed')">GST/Policy submit button greyed out</li>
+            <li onclick="showContent('gst/pan-validation')">GST/PAN validation Issue</li>
+        </ul>
+        </div>
+        
+    </nav>
+    <div class="content">
+        <div class="button-container">
+            <button onclick="showContent('home')">Home</button>
+            <button class="expand-collapse" onclick="toggleAll('expand')">Expand All</button>
+            <button class="expand-collapse" onclick="toggleAll('collapse')">Collapse All</button>
+        </div>
+        <section id="home" class="active">
+            <h1>Dashboard topics</h1>
+            <p><strong>This page contains links for all the topics for dashboard related queries:</strong></p>
+            
+            <ul>
+                <li onclick="showContent('website-addition')">
+                    - When the merchant raises a query that they are unable to add the policy links for their website.<br>
+                    - When the merchant raises a query that on addition website policies they are getting "bad_request" error.<br>
+                </li>
+                <li onclick="showContent('paypal-integration-1')">
+                    - When merchant raises a query that they are getting error "something went wrong" on razorpay dashboard during paypal intergation.<br>
+                </li>
+                <li onclick="showContent('paypal-integration-2')">
+                    - When merchant raises a query that they are getting error "please provide necessary access to razorpay from your paypal account".<br>
+                </li>
+                <li onclick="showContent('account-not-activated')">
+                    - When the merchant raises a query that they are not able to create payment links/QRs or any other flow.<br>
+                </li>
+                <li onclick="showContent('email/contact-update')">
+                    - When the merchant raises a query that they are unable to update their email and phone number.<br>
+                </li>
+                <li onclick="showContent('email/contact-exist')">
+                    - On login when the merchant get an error "Email/phone number already exists".<br>
+                </li>
+                <li onclick="showContent('submit-button-greyed')">
+                    - When the merchant raises a query that the submit button is greyed out during KYC proof submission.<br>
+                </li>
+                <li onclick="showContent('gst/pan-validation')">
+                    - When the merchant raises a query that they are facing issues with GST/PAN submission flow.<br>
+                </li>
+            </ul>
+        </section>
+        
+        <section id="website-addition">
+            <p><strong>Process Steps:</strong></p>
+            <p>
+                - Login to admin dashboard.<br>
+                - Search the MID in the user entity and open the merchant ID details page.<br>
+                - Find "<strong>activation form progress</strong>".<br>
+                - Check Activation progress.<br>
+            </p>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('activation-100%')">
+                <span class="highlight">IF activation progress = 100%</span></span>
+            </p>
+            <div id="activation-100%" class="step">
+                <p><strong>Process Steps:</strong></p>
+                <p>
+                    - Connect with mx over call and ask them to share screen and inspect element while replicating the steps and gather the following information:<br>
+
+                    - error in inspect element.<br>
+                    - screen recording.<br> 
+                    - X-request ID.<br>
+
+                    - With the request search in logs to find the exception/error.<br><br>
+
+                    <strong>If merchant is unavailable, ask the merchant to share the same over the ticket.</strong><br><br>
+
+                    - Once the merchant shares the details, add the above found logs in the ticket notes and push ticket to L2 team.<br>
+                </p>
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Transfer To A Different Group<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('activation-not-100%')">
+                <span class="highlight">IF activation progress != 100% AND activation form status = Needs clarifications OR Under investigation OR MCC pending</span></span>
+            </p>
+            <div id="activation-not-100%" class="step">
+                <p><strong>Process Step</strong></p>
+                <p>
+                    Send ticket to activation team with note: <strong>account not activated, Please assist.</strong><br>
+                </p>
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Transfer To A Different Group<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+            </div>
+        </section>
+
+        <section id="paypal-integration-1">
+            <p><strong>Process Steps:</strong></p>
+                <p>
+                    - Connect with mx over call and ask them to share screen and inspect element while replicating the steps and gather the following information:<br>
+
+                    - error in inspect element.<br>
+                    - screen recordin.<br> 
+                    - X-request ID.<br>
+
+                    - With the request search in logs to find the exception/error.<br><br>
+
+                    <strong>If merchant is unavailable, ask the merchant to share the same over the ticket.</strong><br><br>
+
+                    - Once the merchant shares the details, add the above found logs in the ticket notes and push ticket to L2 team.<br>
+                </p>
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Transfer To A Different Group<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+        </section>
+
+        <section id="paypal-integration-2">
+            <p><strong>Process Step</strong></p>
+            <p>
+                - Login to admin dashboard.<br>
+                - Search the MID in the user entity and open the merchant ID details page.<br>
+                - Find "<strong>Terminals</strong>".<br>
+                - Check if Paypal terminal is available.<br>
+            </p>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('terminal-available')">
+                <span class="highlight">IF Terminal = Available:</span></span>
+            </p>
+            <div id="terminal-available" class="step">
+                <p><strong>Process Step</strong></p>
+                <p>
+                    - Open the terminal ID and check the following parameters:<br>
+                    - Enable Wallets paramter contains : <strong>["paypal"]</strong><br>
+                    - Enabled : <strong>Tick/True</strong><br>
+                    - Status: <strong>Activated</strong><br>
+                </p>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('valid-parameters')">
+                    <span class="highlight">IF all parameters = Valid:</span></span>
+                </p>
+                <div id="valid-parameters" class="step">
+                    <p>
+                        <strong>Ticket Action:</strong>
+                    </p>
+                    <p>
+                        - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        - <strong>Agent Category: </strong>TS-Dashboard<br>
+                        - <strong>Agent Sub-Category: </strong>Dashboard configuration issue<br>
+                        - <strong>Agent Item: </strong>Paypal Integration<br>
+                        - Click on <strong>UPDATE </strong>button.<br><br>
+                    </p>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        Inform the merchant that they need to login to their paypal account/dashboard and check for any notifications from paypal<br> 
+                        propmpting them to enable razorpay.<br>
+                    </p>
+                    <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+                </div>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('valid-not-parameters')">
+                     <span class="highlight">IF all parameters != Valid:</span></span>
+                </p>
+                <div id="valid-not-parameters" class="step">
+                    <p><strong>Process Step</strong></p>
+                    <p>
+                        - Add details in ticket notes and send to L2 team.<br>
+                    </p>
+                    <p>
+                        <strong>Ticket Action:</strong><br>
+                        <strong>End State Action: </strong> Transfer To A Different Group<br>
+                        Click on <strong>UPDATE </strong>button.
+                    </p><br>
+                </div>
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('terminal-not-available')">
+                <span class="highlight">IF Terminal != Available:</span></span>
+            </p>
+            <div id="terminal-not-available" class="step">
+                <p>
+                    <strong>Ticket Action:</strong>
+                </p>
+                <p>
+                    - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                    - <strong>Agent Category: </strong>TS-Dashboard<br>
+                    - <strong>Agent Sub-Category: </strong>Dashboard configuration issue<br>
+                    - <strong>Agent Item: </strong>Paypal Integration<br>
+                    - Click on <strong>UPDATE </strong>button.<br><br>
+                </p>
+                <p><strong>Instruction</strong></p>
+                <p>
+                    Inform the mx to de-link their paypal account from razorpay and try again. If the issue persists, send ticket to L2
+                </p>
+                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+            </div>
+        </section>
+
+        <section id="account-not-activated">
+            <div id="account-not-activated">
+                <p>
+                    <strong>Ticket Action:</strong>
+                </p>
+                <p>
+                    - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                    - <strong>Agent Category: </strong>TS-Dashboard<br>
+                    - <strong>Agent Sub-Category: </strong>Activation/Onboarding issue<br>
+                    - <strong>Agent Item: </strong>Activation delay<br>
+                    - Click on <strong>UPDATE </strong>button.<br><br>
+                </p>
+                <p><strong>Instruction</strong></p>
+                <p>
+                    Inform the merchant that their account was activated less than 24 hrs account.<br>
+                    Mx needs to try again after the 24 hrs cooldown period.<br><br>
+
+                    <strong>IF mx comes back, ask them for screen recording and push to L2.</strong><br>
+                </p>
+                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+            </div>
+        </section>
+
+        <section id="email/contact-update">
+               <p>
+                    <span class="toggle" onclick="toggleDisplay('email/contact-available')">
+                    <span class="highlight">IF EMAIL/contact = available</span></span>
+               </p>
+               <div id="email/contact-available" class="step">
+                    <p><strong>Process Step</strong></p>
+                    <p>
+                        - login to admin dashboard.<br>
+                        - select User from enitities.<br>
+                        - Enter email/contact (whichever available).<br>
+                        - take the user ID and search in merchant_user enitity to get the MID mapped to that user ID.<br><br>
+
+                        <strong>Note: this flow will provide you all the MIDs mapped to that email/contact</strong><br>
+                        - Send to BSO  with ticket notes asking them to update the contact/email with a dummy value or as per merchant<br> 
+                        requested detail and ask the merchant to create or update the number.<br>
+                    </p>
+                    <p>
+                        <strong>Ticket Action:</strong><br>
+                        <strong>End State Action: </strong> Transfer To A Different Group<br>
+                        Click on <strong>UPDATE </strong>button.
+                    </p><br>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('dummy-flow')">
+                        <span class="highlight">If DUMMY details flow does not work.</span></span>
+                    </p>
+                    <div id="dummy-flow" class="step">
+                        <p><strong>Process Step</strong></p>
+                        <p>
+                            Add all information in ticket notes and send to L2.
+                        </p>
+                        <p>
+                            <strong>Ticket Action:</strong><br>
+                            <strong>End State Action: </strong> Transfer To A Different Group<br>
+                            Click on <strong>UPDATE </strong>button.
+                        </p><br>
+                    </div>
+               </div>
+               <p>
+                    <span class="toggle" onclick="toggleDisplay('email/contact-unavailable')">
+                    <span class="highlight">IF EMAIL/contact != available</span></span>
+               </p>
+               <div id="email/contact-unavailable" class="step">
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Additional Info Required<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        - Connect with merchant over call to share the email ID/contact number for which they are facing this issue.<br>
+
+                        - If merchant is unavailable, ask the merchant to share the same over the ticket.<br>
+
+                        - Once mx shares the details follow "<strong>EMAIL/contact != available</strong>"<br>
+                    </p>
+               </div>
+        </section>
+        <section id="email/contact-exist">
+            <p>
+                <span class="toggle" onclick="toggleDisplay('email/contact-is-available')">
+                <span class="highlight">IF EMAIL/contact = available</span></span>
+           </p>
+           <div id="email/contact-is-available" class="step">
+                <p><strong>Process Step</strong></p>
+                <p>
+                    - login to admin dashboard.<br>
+                    - select User from enitities.<br>
+                    - Enter email/contact (whichever available).<br>
+                    - take the user ID and search in merchant_user enitity to get the MID mapped to that user ID.<br>
+
+                    <strong>Note: this flow will provide you all the MIDs mapped to that email/contact</strong><br>
+                </p>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('multiple-mid-available')">
+                        <span class="highlight">IF Multiple MIDs = available for the email/contact</span></span>
+                    </p>
+                    <div id="multiple-mid-available" class="step">
+                        <p>
+                            - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                            - <strong>Agent Category: </strong>TS-Dashboard<br>
+                            - <strong>Agent Sub-Category: </strong>Dashboard configuration issue<br>
+                            - <strong>Agent Item: </strong>Unable to change email ID / phone number<br>
+                            - Click on <strong>UPDATE </strong>button.<br><br>
+                        </p>
+                        <p><strong>Instruction</strong></p>
+                        <p>
+                            - Request the merchant to try logging in with this link: https://accounts.razorpay.com/auth/ <br>
+                        
+                            - IF the issue persists, send ticket to L2. <br>
+                        </p>
+                        <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+                    </div>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('multiple-mid-not-available')">
+                    <span class="highlight">IF Multiple MIDs != available for the email/contact</span></span>
+                </p>
+                <div id="multiple-mid-not-available" class="step">
+                    <p>
+                        - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        - <strong>Agent Category: </strong>TS-Dashboard<br>
+                        - <strong>Agent Sub-Category: </strong>Dashboard configuration issue<br>
+                        - <strong>Agent Item: </strong>Unable to change email ID / phone number<br>
+                        - Click on <strong>UPDATE </strong>button.<br><br>
+                    </p>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        - Request the merchant to try clearing cache and logging in with this link: https://dashboard.razorpay.com/?screen=sign_in in incognito mode and check. <br>
+
+                        - IF the issue persists, send ticket to L2 <br>
+                    </p>
+                    <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+                </div>
+           </div>
+           <p>
+                <span class="toggle" onclick="toggleDisplay('email/contact-is-unavailable')">
+                <span class="highlight">IF EMAIL/contact != available</span></span>
+            </p>
+            <div id="email/contact-is-unavailable" class="step">
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Additional Info Required<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+                <p><strong>Instruction</strong></p>
+                <p>
+                    - Connect with merchant over call to share the email ID/contact number for which they are facing this issue.<br>
+
+                    - If merchant is unavailable, ask the merchant to share the same over the ticket.<br>
+
+                    - Once mx shares the details follow "<strong>EMAIL/contact != available</strong>"<br>
+                </p>
+            </div>
+        </section>
+
+        <section id="submit-button-greyed">
+            <p><strong>Process Step</strong></p>
+            <p>
+                - Login to admin dashboard.<br>
+                - Search the MID in the user entity and open the merchant ID details page.<br>
+                - Find "activation form progress".<br>
+                - Check Activation progress.<br>
+            </p>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('activation-85%')">
+                <span class="highlight">IF activation progress = 85%</span></span>
+            </p>
+            <div id="activation-85%" class="step">
+                <p><strong>Process Step</strong></p>
+                <p>
+                    - Send to L2 team with ticket notes: <br>
+                    GST/PAN submit button greyed out, activation status at 85% percent.<br>
+                </p>
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Transfer To A Different Group<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('activation-65%')">
+                <span class="highlight">IF activation progress = 65%</span></span>
+            </p>
+            <div id="activation-65%" class="step">
+                <p><strong>Process Step</strong></p>
+                <p>
+                    - login to admin dashboard with the MID.<br>
+                    - Open inspect- network call, try to login to the MID from the admin dashboard.<br>
+                    - Find the activation api call response.<br>
+                    - Within the API response find "required field" parameter.<br>
+                </p>
+                <p>
+                    - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                    - <strong>Agent Category: </strong>TS-Dashboard<br>
+                    - <strong>Agent Sub-Category: </strong>Activation/Onboarding<br>
+                    - <strong>Agent Item: </strong>Unable to Submit KYC<br>
+                    - Click on <strong>UPDATE </strong>button.<br><br>
+                </p>
+                <p><strong>Instrcution</strong></p>
+                <p>
+                    Inform the merchant that the following details <strong>{ parameters/fields in required field parameter}</strong> are not uploaded correctly and need to be re-uploaded.
+                </p>
+                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+            </div>
+        </section>
+        <section id="gst/pan-validation">
+            <p><strong>Process Step</strong></p>
+            <p>
+                - Login to admin dashboard. <br>
+                - Go to merchant detail from entities and search the merchant ID in Search Entity Id. <br>
+                - Find the parameters: Promoter Pan & Pan Name. <br>
+            </p>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('signatory-match')">
+                    <span class="highlight">IF PAN name = GST/CIN signatories</span></span>
+                </p>
+                <div id="signatory-match" class="step">
+                    <p>
+                        - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        - <strong>Agent Category: </strong>TS-Dashboard<br>
+                        - <strong>Agent Sub-Category: </strong>Activation/Onboarding<br>
+                        - <strong>Agent Item: </strong>GST / PAN Validation Issues<br>
+                        - Click on <strong>UPDATE </strong>button.<br><br>
+                    </p>
+                    <p><strong>Process Step</strong></p>
+                    <p>
+                        Inform the merchant of the activation status of their account and ask them to reachout if there are any further queries.<br>
+                    </p>
+                    <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+                </div>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('signatory-mismatch')">
+                    <span class="highlight">IF PAN name != GST/CIN signatories</span></span>
+                </p>
+                <div id="signatory-mismatch" class="step">
+                    <p>
+                        - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        - <strong>Agent Category: </strong>TS-Dashboard<br>
+                        - <strong>Agent Sub-Category: </strong>Activation/Onboarding<br>
+                        - <strong>Agent Item: </strong>GST / PAN Validation Issues<br>
+                        - Click on <strong>UPDATE </strong>button.<br><br>
+                    </p>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        Mx to needs to update the GST/CIN certificate and have the promoter pan name as one of the signatories.<br><br>
+
+                        <strong>Note:</strong> If the merchant is not willing to follow the above step, as an alternative, mx can create a new MID using pan <br>
+                        details of one of the signatories present in GST/CIN certificate.<br>
+                    </p>
+                    <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+
+                </div>
+        </section>
+        <script>
+            function toggleDisplay(sectionId) {
+                var section = document.getElementById(sectionId);
+                if (section.style.display === "none") {
+                    section.style.display = "block";
+                } else {
+                    section.style.display = "none";
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
