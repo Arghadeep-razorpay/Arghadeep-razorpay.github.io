@@ -1,10 +1,200 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Decision Tree</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech-support Decision Tree</title>
+    <style>
+        :root {
+            --razorpay-blue: #2a2a8a;
+            --razorpay-purple: #4f46e5;
+            --razorpay-light: #f9fafb;
+            --razorpay-dark: #111827;
+            --razorpay-accent: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--razorpay-light);
+            color: var(--razorpay-dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--razorpay-blue), var(--razorpay-purple));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            color: var(--razorpay-blue);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .method-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--razorpay-accent);
+        }
+        
+        .method-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--razorpay-purple);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--razorpay-purple);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: var(--razorpay-blue);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--razorpay-purple);
+            color: var(--razorpay-purple);
+        }
+        
+        .btn-outline:hover {
+            background: var(--razorpay-purple);
+            color: white;
+        }
+        
+        footer {
+            background: var(--razorpay-dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Welcome!</h1>
-    <a href="UPI.html">Go to UPI Page</a>
+    <header>
+        <div class="container">
+            <div class="logo">Decision Tree</div>
+            <p class="tagline">Smart guidance for optimal debugging</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="hero">
+            <h1>Choose Your Payment Method</h1>
+            <p>Our intelligent decision tree helps you select the best payment option for your transaction based on amount, location, and other factors.</p>
+        </section>
+        
+        <section class="payment-methods">
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>UPI Issues</h3>
+                <p>Debugging available for PG-UPI and QR related queries.</p>
+                <a href="UPI.html" class="btn">Explore UPI Options</a>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="far fa-credit-card"></i>
+                </div>
+                <h3>Dashboard Issues</h3>
+                <p>Debugging available for Onboarding, Activation and Dashboard related queries</p>
+                <a href="#" class="btn btn-outline">Coming Soon</a>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h3>Card Issues</h3>
+                <p>Debugging available for all PG-Cards related queries.</p>
+                <a href="#" class="btn btn-outline">Coming Soon</a>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>© <span id="year"></span> Payment Decision Tool. All rights reserved.</p>
+            <p>Design inspired by Razorpay's color scheme</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Auto-update year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
