@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "690af70af31b42d1853428e250835a0b"}'></script><!-- End Cloudflare Web Analytics -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Tree</title>
+    <title>Decision Tree</title>
     <style>
         body {
             margin: 0;
@@ -238,15 +237,68 @@
                     - With the request search in logs to find the exception/error.<br><br>
 
                     <strong>If merchant is unavailable, ask the merchant to share the same over the ticket.</strong><br><br>
-
-                    - Once the merchant shares the details, add the above found logs in the ticket notes and push ticket to L2 team.<br>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('merchant-issue')">
+                        <span class="highlight">IF Breakage due to merchant centric behaviour</span></span>
+                    </p>
+                    <div id="merchant-issue"class="step">
+                        <p>
+                            <strong>Ticket Action:</strong>
+                        </p>
+                        <p>
+                            - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                            - <strong>Agent Category: </strong>TS-Dashboard<br>
+                            - <strong>Agent Sub-Category: </strong>Dashboard configuration issue<br>
+                            - <strong>Agent Item: </strong>Website addition<br>
+                            - Click on <strong>UPDATE </strong>button.<br><br>
+                        </p>
+                        <p><strong>Instruction:</strong></p>
+                        <p>
+                            Inform the merchant that the failure has happened due to <strong>{merchant centric behaviour}</strong>. Also share steps with the merchant how to rectify the same.<br>
+                            <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                        </p>
+                    </div>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('rzp-issue')">
+                        <span class="highlight">IF Breakage due to razorpay system issue</span></span>
+                    </p>
+                    <div id="rzp-issue"class="step">
+                        <p>
+                            <strong>Ticket Action:</strong><br><br>
+                            <strong>Ticket Action:</strong><br>
+                            <strong>End State Action: </strong> Transfer To A Different Group<br>
+                            <strong>Group:</strong>TS-PSE Support Group<br>
+                            Click on <strong>UPDATE </strong>button.
+                        </p>
+                        <p><strong>Process Step:</strong></p>
+                        <p>
+                            - With the log found in the exception log found in coralogix: <br>
+                            - Create a JIRA ticket with PSE team with the following details: <br>
+                            - Merchant ID: <br>
+                            - Impacted flow: <br>
+                            - Issue Summary: <br>
+                            - Analysis/Logs:<br>
+                            - Replication steps:<br>
+                            - Video Recording / screenshots:<br><br>
+                            <strong>Once the primary ticket is moved to TS-PSE Support Group:</strong><br>
+                            <strong>Ticket Action:</strong><br>
+                            <strong>End State Action: </strong> Resolution By The Same Groupt<br>
+                            - <strong>Agent Category: </strong>TS-Dashboard<br>
+                            - <strong>Agent Sub-Category: </strong>Dashboard configuration issue<br>
+                            - <strong>Agent Item: </strong>P2 Unmanaged.<br><br>
+                            - Click on <strong>UPDATE </strong>button.<br><br>
+                            <strong>Note: </strong> JIRA priority will be based on the prioritization SOP.
+                            <br>
+                            <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Pending with Tech [JIRA]"</p><br>
+                        </p>
+                        <strong>Once issue has been resolved</strong>
+                        <p><strong>Instruction</strong></p>
+                        <p>
+                            Inform the merchant that the issue has been resolved and ask the merchant to check. Mark the ticket as resolve.
+                            <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                        </p>
+                    </div>
                 </p>
-                <p>
-                    <strong>Ticket Action:</strong><br>
-                    <strong>End State Action: </strong> Transfer To A Different Group<br>
-                    Click on <strong>UPDATE </strong>button.
-                </p><br>
-
             </div>
             <p>
                 <span class="toggle" onclick="toggleDisplay('activation-not-100%')">
@@ -268,23 +320,145 @@
         <section id="paypal-integration-1">
             <p><strong>Process Steps:</strong></p>
                 <p>
-                    - Connect with mx over call and ask them to share screen and inspect element while replicating the steps and gather the following information:<br>
-
-                    - error in inspect element.<br>
-                    - screen recordin.<br> 
-                    - X-request ID.<br>
-
-                    - With the request search in logs to find the exception/error.<br><br>
-
-                    <strong>If merchant is unavailable, ask the merchant to share the same over the ticket.</strong><br><br>
-
-                    - Once the merchant shares the details, add the above found logs in the ticket notes and push ticket to L2 team.<br>
+                    - Connect with merchant and confirm if the email ID of the merchant is the primary email ID used created to paypal account and razorpay MID.
                 </p>
                 <p>
-                    <strong>Ticket Action:</strong><br>
-                    <strong>End State Action: </strong> Transfer To A Different Group<br>
-                    Click on <strong>UPDATE </strong>button.
-                </p><br>
+                    <span class="toggle" onclick="toggleDisplay('email-not-primary')">
+                    <span class="highlight">IF merchant email ID = not primary:</span></span>
+                </p>
+                <div id="email-not-primary" class="step">
+                    <p>Instruction</p>
+                    <p>
+                        Inform the merchant that their email ID is not the primary email for razorpay/paypal account. <br>
+                        Ask the merchant make the same email ID as their primary on both razorpay and paypal and reintegrate paypal. <br>
+                        <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                    </p>
+                </div>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('email-primary')">
+                    <span class="highlight">IF merchant email ID = primary:</span></span>
+                </p>
+                <div id="email-primary" class="step">
+                    <p>Process Step:</p>
+                    <p>
+                        - Check razorpay MID and go to Terminal entity.<br>
+                        - Select "<strong>Gateway</strong>" as "<strong>wallet_paypal</strong>".<br>
+                        - Enter the merchant ID in the "<strong>Merchant ID</strong>" field and search.<br>
+                        - From the search result, find the gateway merchant ID.<br>
+                        - Within the terminal entity, search the gateway merchant ID in "<strong>Gateway Merchant ID</strong>" field.<br>
+                    </p>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('multiple-entries')">
+                        <span class="highlight">IF Multiple Entries = available</span></span>
+                    </p>
+                    <div id="multiple-entries" class="step">
+                        <p>
+                            - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                            - <strong>Agent Category: </strong>TS- Cross border<br>
+                            - <strong>Agent Sub-Category: </strong>Paypal<br>
+                            - <strong>Agent Item: </strong>Config issue<br>
+                            - Click on <strong>UPDATE </strong>button.<br><br>
+                        </p>
+                       <p>
+                        <strong>Note:</strong>IF multiple entires are available this means that merchant paypal account is connected with pre-existing razorpay account.<br>
+                        
+                        <p><strong>Instruction:</strong></p>
+                        <p>
+                            Inform the merchant that the paypal account is already integrated with {MID} and razorpay does not allow multi-MID integration with paypal.<br>
+                            If merchant wants to integrate with paypal on latest MID then they need to disconnect paypal with old MID or create a new paypal account. <br>
+                            <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                        </p>
+                       </p>
+                    </div>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('single-entries')">
+                        <span class="highlight">IF Single Entries</span></span>
+                    </p>
+                    <div id="single-entries" class="step">
+                        <p><strong>Process Step</strong></p>
+                        <p>
+                            - Check if the created time of the paypal terminal is greater or less than 3 days:
+                        </p>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('less-than-3')">
+                            <span class="highlight">IF Terminal creation time < 3 days</span></span>
+                        </p>
+                        <div id="less-than-3" class="step">
+                            <p>
+                                - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                                - <strong>Agent Category: </strong>TS- Cross border<br>
+                                - <strong>Agent Sub-Category: </strong>Paypal<br>
+                                - <strong>Agent Item: </strong>Config issue<br>
+                                - Click on <strong>UPDATE </strong>button.<br><br>
+                            </p>
+                            <p><strong>Instruction</strong></p>
+                            <p>
+                                Inform the merchant that the paypal integration is already in initiated state and the same will be completed within 3 working days from paypal end.<br>
+                                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                            </p>
+                        </div>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('greater-than-3')">
+                            <span class="highlight">IF Terminal creation time > 3 days</span></span>
+                        </p>
+                        <div id="greater-than-3" class="step">
+                            <p><strong>Process Step</strong></p>
+                            <p>
+                                - With the gateway merchant ID, login to coralogix and search the following logs:<br>
+                                {gateway merchant ID} AND "<strong>GATEWAY_RESPONSE</strong>"<br>
+                                - Find the parameters <strong>receivable</strong> and <strong>primary email</strong><br>
+                            </p>
+                            <p>
+                                <span class="toggle" onclick="toggleDisplay('true-value')">
+                                <span class="highlight">IF receivable AND primary email value = TRUE</span></span>
+                            </p>
+                            <div id="true-value" class="step">
+                                <p>
+                                    - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                                    - <strong>Agent Category: </strong>TS- Cross border<br>
+                                    - <strong>Agent Sub-Category: </strong>Paypal<br>
+                                    - <strong>Agent Item: </strong>Onboarding issue<br>
+                                    - Click on <strong>UPDATE </strong>button.<br><br>
+                                </p>
+                                <p><strong>Instruction:</strong></p>
+                                <p>
+                                    Inform the merchant that the paypal onboarding has already intiated from razorpay and the onboarding status is pending from paypal end.<br>
+                                    Request the merchant to reintegrate and check.<br>
+                                    <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                                </p>
+                            </div>
+                            <p>
+                                <span class="toggle" onclick="toggleDisplay('false-value')">
+                                <span class="highlight">IF receivable AND primary email value = FALSE</span></span>
+                            </p>
+                            <div id="false-value" class="step">
+                                <p>
+                                    <strong>Parent Ticket Action:</strong><br><br>
+                                    <strong>Ticket Action:</strong><br>
+                                    <strong>End State Action: </strong> Transfer To A Different Group<br>
+                                    <strong>Group:</strong>TS-PSE Support Group<br>
+                                    Click on <strong>UPDATE </strong>button.
+                                </p>
+                                <p><strong>Process Step</strong></p>
+                                <p>
+                                    With the logs found in the previous step, escalate the issue with gateway.<br>
+                                    <strong>Once the primary ticket is moved to TS-PSE Support Group:</strong><br>
+                                    <strong>Parent Ticket Action:</strong><br>
+                                    <strong>Ticket Action:</strong><br>
+                                    <strong>End State Action: </strong> Resolution Through Child Ticket<br>
+                                    - <strong>Agent Category: </strong>TS- Cross border<br>
+                                    - <strong>Agent Sub-Category: </strong>Paypal<br>
+                                    - <strong>Agent Item: </strong>P2 Unmanaged.<br><br>
+                                    - Click on <strong>UPDATE </strong>button.<br><br>
+                                </p>
+                                <p><strong>Instruction:</strong></p>
+                                <p>
+                                    Once the issue has resolution has been confirmed by the gateway, inform the merchant that the issue has been resolved and merchant need to check now.<br>
+                                    <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </section>
 
         <section id="paypal-integration-2">
@@ -329,21 +503,7 @@
                     </p>
                     <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
                 </div>
-                <p>
-                    <span class="toggle" onclick="toggleDisplay('valid-not-parameters')">
-                     <span class="highlight">IF all parameters != Valid:</span></span>
-                </p>
-                <div id="valid-not-parameters" class="step">
-                    <p><strong>Process Step</strong></p>
-                    <p>
-                        - Add details in ticket notes and send to L2 team.<br>
-                    </p>
-                    <p>
-                        <strong>Ticket Action:</strong><br>
-                        <strong>End State Action: </strong> Transfer To A Different Group<br>
-                        Click on <strong>UPDATE </strong>button.
-                    </p><br>
-                </div>
+
             </div>
             <p>
                 <span class="toggle" onclick="toggleDisplay('terminal-not-available')">
@@ -362,7 +522,7 @@
                 </p>
                 <p><strong>Instruction</strong></p>
                 <p>
-                    Inform the mx to de-link their paypal account from razorpay and try again. If the issue persists, send ticket to L2
+                    Inform the mx to de-link their paypal account from razorpay and try again.
                 </p>
                 <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
             </div>
@@ -384,8 +544,6 @@
                 <p>
                     Inform the merchant that their account was activated less than 24 hrs account.<br>
                     Mx needs to try again after the 24 hrs cooldown period.<br><br>
-
-                    <strong>IF mx comes back, ask them for screen recording and push to L2.</strong><br>
                 </p>
                 <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
             </div>
@@ -413,21 +571,6 @@
                         <strong>End State Action: </strong> Transfer To A Different Group<br>
                         Click on <strong>UPDATE </strong>button.
                     </p><br>
-                    <p>
-                        <span class="toggle" onclick="toggleDisplay('dummy-flow')">
-                        <span class="highlight">If DUMMY details flow does not work.</span></span>
-                    </p>
-                    <div id="dummy-flow" class="step">
-                        <p><strong>Process Step</strong></p>
-                        <p>
-                            Add all information in ticket notes and send to L2.
-                        </p>
-                        <p>
-                            <strong>Ticket Action:</strong><br>
-                            <strong>End State Action: </strong> Transfer To A Different Group<br>
-                            Click on <strong>UPDATE </strong>button.
-                        </p><br>
-                    </div>
                </div>
                <p>
                     <span class="toggle" onclick="toggleDisplay('email/contact-unavailable')">
@@ -479,8 +622,6 @@
                         <p><strong>Instruction</strong></p>
                         <p>
                             - Request the merchant to try logging in with this link: https://accounts.razorpay.com/auth/ <br>
-                        
-                            - IF the issue persists, send ticket to L2. <br>
                         </p>
                         <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
                     </div>
@@ -499,8 +640,6 @@
                     <p><strong>Instruction</strong></p>
                     <p>
                         - Request the merchant to try clearing cache and logging in with this link: https://dashboard.razorpay.com/?screen=sign_in in incognito mode and check. <br>
-
-                        - IF the issue persists, send ticket to L2 <br>
                     </p>
                     <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
                 </div>
@@ -539,16 +678,20 @@
                 <span class="highlight">IF activation progress = 85%</span></span>
             </p>
             <div id="activation-85%" class="step">
-                <p><strong>Process Step</strong></p>
                 <p>
-                    - Send to L2 team with ticket notes: <br>
-                    GST/PAN submit button greyed out, activation status at 85% percent.<br>
+                    - <strong>End State Action: </strong> Resolution By The Same Group<br>
+                    - <strong>Agent Category: </strong>TS-Dashboard<br>
+                    - <strong>Agent Sub-Category: </strong>Activation/Onboarding<br>
+                    - <strong>Agent Item: </strong>Unable to Submit KYC<br>
+                    - Click on <strong>UPDATE </strong>button.<br><br>
                 </p>
+                <p><strong>Instruction</strong></p>
                 <p>
-                    <strong>Ticket Action:</strong><br>
-                    <strong>End State Action: </strong> Transfer To A Different Group<br>
-                    Click on <strong>UPDATE </strong>button.
-                </p><br>
+                    Ask the merchant to add a dummy value and save the flow. After this ask the merchant to enter the correct value.<br>
+                    <strong>Note:</strong>Doing this will clear the saved value in our backend and merchant will be able to move forward with their current details.<br>
+                </p>
+                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br><br>
+                
             </div>
             <p>
                 <span class="toggle" onclick="toggleDisplay('activation-65%')">

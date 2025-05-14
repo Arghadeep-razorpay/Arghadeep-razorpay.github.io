@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 350px;
+            height: 500vh; 
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        hr {
+            border: none;
+            height: 2px;
+            background-color: #ccc;
+            width: 100%;
+            margin: 20px 0; /* Spacing around dividers */
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #34495e;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: left;
+            padding-left: 15px;
+        }
+        .sidebar ul li:hover {
+            background: #1abc9c;
+        }
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .content section {
+            display: none;
+        }
+        .content section.active {
+            display: block;
+        }
+        .content ul {
+            list-style: none;
+            padding: 0;
+        }
+        .content ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f4f4f4;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: left;
+            padding-left: 15px;
+            font-weight: bold; /* Make clickable headers bold */
+        }
+        .content ul li:hover {
+            background: #ddd;
+        }
+        .button-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-container button:hover {
+            background: #1abc9c;
+        }
+        .subsection {
+            margin-left: 20px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9e9e9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+        }
+        .subsection.active {
+            display: block;
+        }
+        .step {
+            display: none; /* Ensure all sub-nodes are collapsed by default */
+            margin-left: 20px;
+            padding: 10px;
+            background: #e9e9e9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .toggle {
+            cursor: pointer;
+            color: #1abc9c;
+            text-decoration: underline;
+        }
+        .toggle:hover {
+            color: #16a085;
+        }
+        .highlight {
+            font-weight: bold;
+        }
+        .highlight:hover {
+            color: #16a085;
+        }
+        
+    </style>
+    <script>
+        function showContent(sectionId) {
+            document.querySelectorAll('.content section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function toggleSubsection(event) {
+            const subsection = event.target.nextElementSibling;
+            if (subsection) {
+                subsection.classList.toggle('active');
+            }
+        }
+        function toggleDisplay(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section.style.display === "none") {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+        }
+        
+        // Expand or collapse all sections
+        function toggleAll(action) {
+            const steps = document.querySelectorAll(".step");
+            steps.forEach(step => {
+                step.style.display = action === "expand" ? "block" : "none";
+            });
+        }
+    </script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class ="navbar-1">
+            <h2>Webhook & Plugins</h2>
+        <ul>
+            <li onclick="showContent('webhook-disabled')">Webhook Disabled</li>
+            <li onclick="showContent('webhook-retrigger')">Webhook Retrigger Request</li>
+            <li onclick="showContent('amount-mismatch')">Amount Mismatch Issue</li>
+        </ul>
+        </div>
+        
+    </nav>
+    <div class="content">
+        <div class="button-container">
+            <button onclick="showContent('home')">Home</button>
+            <button class="expand-collapse" onclick="toggleAll('expand')">Expand All</button>
+            <button class="expand-collapse" onclick="toggleAll('collapse')">Collapse All</button>
+        </div>
+        <section id="home" class="active">
+            <h1>Webhook & Plugin topics</h1>
+            <p><strong>This page contains links for all the topics for Webhook & Plugin related queries:</strong></p>
+            
+            <ul>
+                <li onclick="showContent('webhook-disabled')">
+                    - When the merchant raises a query that their webhook is getting disabled.<br>
+                    - When the merchant raises a query that order status is not getting updated at their end<br>
+                    - Merchant is not receiving correct webhook event.<br>
+                </li>
+                <li onclick="showContent('webhook-retrigger')">
+                    - When the merchant raises a request to retrigger a webhook event for a certain transaction ID<br>
+                </li>
+                <li onclick="showContent('amount-mismatch')">
+                    - When merchant raises a query that there is amount mismatch between razorpay payment and their order.<br>
+                    - When the merchant informs that razorpay has created payment/order for less than the expected amount.<br>
+                </li>
+            </ul>
+        </section>
+        
+        <section id="webhook-disabled">
+            <p>
+                <span class="toggle" onclick="toggleDisplay('webhook-is-disabled')">
+                <span class="highlight">IF Payment ID = Available:</span></span>
+            </p>
+            <div id="webhook-is-disabled" class="step">
+                <p><strong>Process Steps:</strong></p>
+                <p>
+                    - Open admin dashboard.<br>
+                    - Navigate to entites->payments.<br>
+                    - Open the payment ID.<br>
+                    - Click on "Payment Analytics" to check the following parameters:<br>
+                    - Integration<br>
+                    - Integration version<br><br>
+
+                    <strong>Note:</strong> this will tell you if a plugin was use and which version of the plugin is integrated by the merchant.<br>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('plugin-integration')">
+                        <span class="highlight">IF Integration != NULL</span></span>
+                    </p>
+                    <div id="plugin-integration"class="step">
+                        <p>
+                            <strong>Process Steps:</strong>
+                        </p>
+                        <p>
+                            - Login to merchant dashboard.<br>
+                            - Navigate to webhook from accounts and settings.<br>
+                            - Click on webhook url.<br>
+                            - Check if the correct event is subscribed on the webhook or not.<br><br>
+                            <strong>Note:</strong> <br>
+                            - Webhook event will be dependant on the plugin that they are using.<br>
+                            - Use to this doc to navigate to relevant plugin and check which webhook event is required.<br>
+                        </p>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('webhook-not-enabled')">
+                            <span class="highlight">IF correct event is enabled BUT webhook is disabled</span></span>
+                        </p>
+                        <div id="webhook-not-enabled"class="step">
+                            <p>
+                                <strong>Ticket Action:</strong><br>
+                                <strong>End State Action: </strong> Resolution By The Same Group<br>
+                                <strong>Agent Category:</strong> TS-Plugins<br>
+                                <strong>Agent Sub-Category:</strong> Integration Issues<br>
+                                <strong>Agent Item:</strong> {Plugin name} plugin - Integration Issues.<br>
+                                Click on <strong>UPDATE </strong>button.
+                            </p>
+                            <p><strong>Communication</strong></p>
+                            <p>
+                                Inform the merchant that their webhook is getting disabled as their hosting service is not able to comsume the razorpay webhook properly.<br>
+                                Also inform the merchant that in order to resolve the issue they need to whitelist the razorpay webhook IPs with their hosting services and then re-enable the webhook from the razorpay dashboard.<br>
+                                
+                                Steps to re-enable webhook from merchant dashboard:<br>
+                                Merchant dashboard -> Accounts & Settings -> Webhook -> click on the disabled webhook url -> toggle enable/disable button.<br><br>
+    
+                                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br>
+                            </p>
+                        </div>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('event-not-enabled')">
+                            <span class="highlight">IF webhook is enabled BUT correct event is not enabled</span></span>
+                        </p>
+                        <div id="event-not-enabled"class="step">
+                            <p>
+                                <strong>Ticket Action:</strong><br>
+                                <strong>End State Action: </strong> Resolution By The Same Group<br>
+                                <strong>Agent Category:</strong> TS-Plugins<br>
+                                <strong>Agent Sub-Category:</strong> Integration Issues<br>
+                                <strong>Agent Item:</strong> {Plugin name} plugin - Integration Issues.<br>
+                                Click on <strong>UPDATE </strong>button.
+                            </p>
+                            <p><strong>Instruction:</strong></p>
+                            <p>
+                                Request the merchant to whitelist the webhook IPs with their hosting service if already not done.<br>
+                                Also ask them to update and re-integrate the plugin.<br><br>
+
+                                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br>
+                            </p>
+                        </div>
+                    </div>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('pg-integration')">
+                        <span class="highlight">IF Integration = NULL</span></span>
+                    </p>
+                    <div id="pg-integration"class="step">
+                        <p>
+                            <strong>Process Steps:</strong>
+                        </p>
+                        <p>
+                            - Login to merchant dashboard.<br>
+                            - Navigate to webhook from accounts and settings.<br>
+                            - Click on webhook url.<br>
+                            - Check if the correct event is subscribed on the webhook or not.<br>
+                        </p>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('pg-webhook-not-enabled')">
+                            <span class="highlight">IF webhook is enabled BUT correct event is not enabled.</span></span>
+                        </p>
+                        <div id="pg-webhook-not-enabled"class="step">
+                            <p>
+                                <strong>Ticket Action:</strong><br>
+                                <strong>End State Action: </strong> Resolution By The Same Group<br>
+                                <strong>Agent Category:</strong> TS-Webhooks<br>
+                                <strong>Agent Sub-Category:</strong> Webhook Delivery Failure<br>
+                                <strong>Agent Item:</strong> Webhook/Event not configured<br>
+                                Click on <strong>UPDATE </strong>button.
+                            </p>
+                            <p><strong>Instruction:</strong></p>
+                            <p>
+                                Inform the merchant that the correct webhook event is configured and share steps with enabled the webhook.<br><br>
+                                Steps to re-enable webhook from merchant dashboard:<br>
+                                Merchant dashboard -> Accounts & Settings -> Webhook -> click on the disabled webhook url -> toggle enable/disable button.<br><br>
+
+                                <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br>
+                            </p>
+                        </div>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('pg-event-not-enabled')">
+                            <span class="highlight">IF correct event is enabled BUT webhook is disabled.</span></span>
+                        </p>
+                        <div id="pg-event-not-enabled"class="step">
+                            <p>
+                                <strong>Process Steps:</strong>
+                            </p>
+                            <p>
+                               - Login to coralogix and search the following logs in Dataprime with the payment ID shared by the merchant:<br>
+                               <strong>"source logs | where $l.applicationname == 'stork' && $d.msg ~ 'received request to process event'<br>
+                                | where $d.log ~ 'pay_QK6rQN5BIW0H7J'<br>
+                                | extract $d.log into $d.new using jsonobject(0)<br>
+                                | groupby $d.new.ownedIds.id, $d.new.event.name, $d.new.ownedIds.ownerId, $d.new.ts, $m.timestamp"<br></strong>
+                                - Find the event ID for that relevant event and navigate to stork dashboard section on the admin dashboard.<br>
+                                - Enter the relevant details in the required fields:<br>
+                                - Event ID: Event id of the payment<br>
+                                - Owner ID: Enter merchant ID<br>
+                                - Start Date - End Date: Has to be between time period when webhook was supposed to be triggered. <br>
+                            </p>
+                            <p>
+                                <strong>Ticket Action:</strong><br>
+                                <strong>End State Action: </strong> Resolution By The Same Group<br>
+                                <strong>Agent Category:</strong> TS-Webhooks<br>
+                                <strong>Agent Sub-Category:</strong> Webhook Delivery Failure<br>
+                                <strong>Agent Item:</strong> Non 2xx response from mx server<br>
+                                Click on <strong>UPDATE </strong>button
+                            </p>
+                            <p><strong>Communication:</strong></p>
+                            Inform the merchant that the webhook was disabled due to non 2xx response from merchant server.<br>
+                            Share the response received from the merchant server and inform the merchant check from their end as to why their server is not sending 2xx response.<br>
+                            Also share the webhook IPs with the merchant and ask them to whitelist the IPs at their server end in order to mitigate the problem.<br>
+                            Inform the merchant: To ensure webhook reliability, build an internal alerting mechanism. This involves periodically sending dummy payloads to your webhook URLs and monitoring the responses for failures. <br>
+                            Configure alerts to promptly notify your developers for quick issue resolution. This proactive monitoring enhances integration stability.<br>
+                            <strong>Steps to re-enable webhook from merchant dashboard:</strong><br>
+                            Merchant dashboard -> Accounts & Settings -> Webhook -> click on the disabled webhook url -> toggle enable/disable button.<br>
+
+                            <p><strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"</p><br>
+                        </div>
+                        <p>
+                            <span class="toggle" onclick="toggleDisplay('webhook-not-sent')">
+                            <span class="highlight">IF correct event and webhook is enabled BUT merchant did not receive webhook</span></span>
+                        </p>
+                        <div id="webhook-not-sent"class="step">
+                            <p>
+                            <strong>Ticket Action:</strong><br>
+                            <strong>End State Action: </strong> Transfer To A Different Group<br>
+                            <strong>Group:</strong>TS-PSE Support Group<br>
+                            Click on <strong>UPDATE </strong>button.
+                            </p>
+                            <p><strong>Process Step:</strong></p>
+                            <p>
+                                Login to coralogix and search the following logs in Dataprime with the payment ID shared by the merchant:<br>
+                                "source logs | where $l.applicationname == 'stork' && $d.msg ~ 'received request to process event'<br>
+                                | where $d.log ~ 'pay_QK6rQN5BIW0H7J'<br>
+                                | extract $d.log into $d.new using jsonobject(0)<br>
+                                | groupby $d.new.ownedIds.id, $d.new.event.name, $d.new.ownedIds.ownerId, $d.new.ts, $m.timestamp"<br>
+                                - <strong>With the above log</strong><br>
+                                - Merchant ID.<br>
+                                - Sample Payment ID.<br>
+                                - logs
+                                <strong>Ticket Action:</strong><br>
+                                <strong>End State Action: </strong> Resolution Through Child Ticket<br>
+                                - <strong>Agent Category: </strong>TS-Webhooks<br>
+                                - <strong>Agent Sub-Category: </strong>Webhook Delivery Failure<br>
+                                - <strong>Agent Item: </strong>P2 Unmanaged.<br><br>
+                                - Click on <strong>UPDATE </strong>button.<br><br>
+                            </p>
+                            <p>
+                                <strong>Instruction:</strong><br>
+                                Once the issue is resolved, inform the merchant of the resolution and ask them to check from their end.<br>
+                                <strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"<br><br>
+                            </p>
+                        </div>
+                    </div>
+                </p>
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('pay-id-unavailable')">
+                <span class="highlight">IF Payment ID = Unavailable:</span></span>
+            </p>
+            <div id="pay-id-unavailable" class="step">
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Additional Info Required<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+                <p><strong>Instruction:</strong></p>
+                <p>
+                    Request the merchant to share the payment ID and screenshot.
+                </p>
+                <p>Once the merchant shares the information, follow <strong>IF Payment ID = Available</strong></p>
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Additional Info Required<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+            </div>
+        </section>
+
+        <section id="webhook-retrigger">
+            <p>
+                <span class="toggle" onclick="toggleDisplay('retrigger-greater-than-5')">
+                <span class="highlight">IF Transaction ID = Available AND Count < 5</span></span>
+            </p>
+            <div id="retrigger-greater-than-5" class="step">
+                <p><strong>Process Step</strong></p>
+                <p>
+                    Open the transaction ID in admin dashboard and check if it is older than 14 days or not.<br>
+                </p>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('transaction-greater-than-14')">
+                    <span class="highlight">IF Transaction ID = older than 14 days</span></span>
+                </p>
+                <div id="transaction-greater-than-14" class="step">
+                    <p>
+                        <strong>Ticket Action:</strong><br>
+                        <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        <strong>Agent Category:</strong> TS-Webhooks<br>
+                        <strong>Agent Sub-Category:</strong> Resend Request<br>
+                        <strong>Agent Item:</strong> Retrigger Webhook Request for Txn as Merchant did not receive it<br>
+                        Click on <strong>UPDATE </strong>button.
+                    </p>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        Inform the merchant the retrigger is not possible as we only store webhook data for the last 14 days.<br>
+                        Also inform the merchant, as a workaround they can download the required report from the merchant dashboard or use fetch API as a fallback.<br>
+                        <strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"<br><br>
+                    </p>
+                </div>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('transaction-less-than-14')">
+                    <span class="highlight">IF Transaction ID = less than 14 days</span></span>
+                </p>
+                <div id="transaction-less-than-14" class="step">
+                    <p><strong>Process Step</strong></p>
+                    <p>
+                        - With the merchant ID, login to merchant dashboard.<br>
+                        - Check webhook status from accounts and settings.<br>
+                    </p>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('webhook-event-enabled')">
+                        <span class="highlight">IF webhook AND event = Enabled</span></span>
+                    </p>
+                    <div id="webhook-event-enabled" class="step">
+                        <p><strong>Process Steps</strong></p>
+                        <p>
+                            - Take the provided transaction ID and open coralogix to find the following logs for the required event:<br>
+                            <strong>{payment_ID} AND message:"STORK_DISPATCH_EVENT_REQUEST"</strong><br>
+                            - From the above logs find the event ID and open stork dashboard in admin dashboard.<br>
+                            - Enter the relevant details in the required fields:<br>
+                            - Event ID: Event id of the payment<br>
+                            - Owner ID: Enter merchant ID<br>
+                            - Start Date - End Date: Has to be between time period when webhook was supposed to be triggered. <br>
+                            Once the webhook events are populated, select the corrrect event for which merchant has raised the request and click retrigger button.<br>
+                        </p>
+                        <p>
+                            <strong>Ticket Action:</strong><br>
+                            <strong>End State Action: </strong> Resolution By The Same Group<br>
+                            <strong>Agent Category:</strong> TS-Webhooks<br>
+                            <strong>Agent Sub-Category:</strong> Resend Request<br>
+                            <strong>Agent Item:</strong> Retrigger Webhook Request for Txn as Merchant did not receive it<br>
+                            Click on <strong>UPDATE </strong>button.
+                        </p>
+                        <p><strong>Instruction</strong></p>
+                        <p>
+                            Inform the merchant that the webhook has been retriggered successfully.<br>
+                            Also inform the merchant that the webhook retrigger was a one-time activity and cannot be done again and again.<br>
+                            If any transaction related webhook was missed by the merchant, as an alternative they can refer to the reports available on the dashboard or use Fetch API as a fallback.<br>
+                            <strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"<br><br>
+                        </p>
+                    </div>
+                    <p>
+                        <span class="toggle" onclick="toggleDisplay('webhook-event-not-enabled')">
+                        <span class="highlight">IF webhook OR event != Enabled</span></span>
+                    </p>
+                    <div id="webhook-event-not-enabled" class="step">
+                        <p><strong>Process Step</strong></p>
+                        <p>
+                            Refer to <strong>Webhook Disabled</strong> flow.<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('retrigger-less-than-5')">
+                <span class="highlight">IF Transaction ID = Available AND Count >= 5</span></span>
+            </p>
+            <div id="retrigger-less-than-5" class="step">
+                <p><strong>Instruction</strong></p>
+                <p>
+                    Inform the merchant that retrigger is not possible and ask the merchant to implement Fetch API in order to reconcile the impacted payment IDs.<br>
+                    <strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"<br><br>
+                </p>
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('transaction-id-unavailable')">
+                <span class="highlight">IF Transaction ID = Unavailable</span></span>
+            </p>
+            <div id="transaction-id-unavailable" class="step">
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Additional Info Required<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+                <p><strong>Instruction</strong></p>
+                <p>
+                    Request the merchant to share the transaction ID.<br>
+                    Once the merchant shares the relevant information, follow steps for <strong>Transaction ID = available</strong>
+                </p>
+            </div>
+        </section>
+
+        <section id="amount-mismatch">
+            <p>
+                <span class="toggle" onclick="toggleDisplay('payment/transaction-available')">
+                <span class="highlight">IF Transaction ID = Available AND Proof of mismatch = available</span></span>
+            </p>
+            <div id="payment/transaction-available" class="step">
+                <p><strong>Process Steps</strong></p>
+                <p>
+                    - Open admin dashboard.<br>
+                    - Navigate to entites->payments<br>
+                    - Open the payment ID.<br>
+                    - Click on "Payment Analytics" to check the following parameters:<br>
+                    - Integration<br>
+                    - Integration version<br>
+
+                    <strong>Note: this will tell you if a plugin was use and which version of the plugin is integrated by the merchant</strong><br>
+
+                    Check if offer was appiled on the payment:<br>
+                    - open the order ID of the payment and validate the following:<br>
+                    - order amount = payment amount<br>
+                    - offer ID parameter = Null<br>
+                </p>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('plugin-offer')">
+                    <span class="highlight">IF Integration = not null AND order amount = payment amount</span></span>
+                </p>
+                <div id="plugin-offer" class="step">
+                    <p><strong>Note:</strong> this means offer was implemented on plugin checkout and razorpay received order create request for the discounted amount itself</p>
+                    <p>
+                        <strong>Ticket Action:</strong><br>
+                        <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        <strong>Agent Category:</strong> TS-Plugins<br>
+                        <strong>Agent Sub-Category:</strong> Integration Issues<br>
+                        <strong>Agent Item:</strong> {Plugin name} plugin - Integration Issues<br>
+                        Click on <strong>UPDATE </strong>button.
+                    </p>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        Inform the merchant that an offer was applied on the plugin checkout due to which razorpay received order create request for the discounted amount leading mismatch.<br>
+                        Also inform the merchant that in order to mitigate this issue, they need to disable all plugin offers and use offers on the razorpay checkout.<br>
+                        <strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"<br><br>
+                    </p>
+                </div>
+                <p>
+                    <span class="toggle" onclick="toggleDisplay('pg-offer')">
+                    <span class="highlight">IF Integration = not null AND order amount != payment amount</span></span>
+                </p>
+                <div id="pg-offer" class="step">
+                    <p><strong>Note:</strong> this means mx is on standard PG integration, offer was implemented on razorpay checkout and payment was created on the discounted amount</p>
+                    <p>
+                        <strong>Ticket Action:</strong><br>
+                        <strong>End State Action: </strong> Resolution By The Same Group<br>
+                        <strong>Agent Category:</strong> TS-Offers<br>
+                        <strong>Agent Sub-Category:</strong> Offers Integrations Issue<br>
+                        <strong>Agent Item:</strong> Amount Mismatch<br>
+                        Click on <strong>UPDATE </strong>button.
+                    </p>
+                    <p><strong>Instruction</strong></p>
+                    <p>
+                        Inform the merchant that the customer applied an offer on the razorpay checkout due to which the payment was created for the discounted amount and the order was created for the original amount.<br>
+                        If merchant wants to stop this behavior of mismatch then they can disable razorpay offers and use offers on the plugin such that razorpay always receives order request for discounted amount.<br>
+                        <strong>Ticket Action: </strong>Update <strong>Status: </strong>to "Resolved"<br><br>
+                    </p>
+                </div>
+            </div>
+            <p>
+                <span class="toggle" onclick="toggleDisplay('payment/transaction-unavailable')">
+                <span class="highlight">IF Transaction ID OR Proof of mismatch = Unavailable</span></span>
+            </p>
+            <div id="payment/transaction-unavailable" class="step">
+                <p>
+                    <strong>Ticket Action:</strong><br>
+                    <strong>End State Action: </strong> Additional Info Required<br>
+                    Click on <strong>UPDATE </strong>button.
+                </p><br>
+                <p><strong>Instruction</strong></p>
+                <p>
+                    Request the merchant for these details.
+                    Once the details are shared by the merchant, follow <strong>Transaction ID = Available AND Proof of mismatch = available</strong>
+                </p>
+            </div>
+        </section>
+        <script>
+            function toggleDisplay(sectionId) {
+                var section = document.getElementById(sectionId);
+                if (section.style.display === "none") {
+                    section.style.display = "block";
+                } else {
+                    section.style.display = "none";
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
